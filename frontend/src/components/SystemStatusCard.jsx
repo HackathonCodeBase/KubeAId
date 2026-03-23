@@ -4,6 +4,10 @@ export default function SystemStatusCard({ status, issue, severity }) {
         high_cpu: 'HIGH CPU',
         memory_spike: 'MEMORY SPIKE',
         service_timeout: 'SVC TIMEOUT',
+        crashloopbackoff: 'CRASH LOOP',
+        config_error: 'CONFIG ERR',
+        image_pull_error: 'IMG PULL ERR',
+        memory_leak: 'MEM LEAK',
     }
     const sevColor = { low: 'text-yellow-400 border-yellow-500', medium: 'text-orange-400 border-orange-500', high: 'text-[#CC0000] border-[#CC0000]' }
 

@@ -48,4 +48,25 @@ API Docs → **http://localhost:8000/docs**
 
 ---
 
-*Built for a hackathon — clarity and demo-ability first.*
+## 🧠 What KubeAid Adds (The Real Value)
+
+**1. Intelligent Failure Diagnosis**
+- *Kubernetes:* "Pod crashed → restart it"
+- *KubeAid:* Detects *why* it crashed (Memory leak, CrashLoopBackOff, Config error, Image issue) and moves from reaction to understanding.
+
+**2. Smart Decision Engine**
+- *Kubernetes:* Follows fixed rules.
+- *KubeAid:* Chooses the best action dynamically (Restart pod, Scale replicas, Rollback deployment, Switch node). It acts as the brain for the cluster.
+
+**3. Observability & Pattern Detection**
+- *Kubernetes:* Shows metrics via external tools.
+- *KubeAid:* Tracks exact anomaly patterns and state over time, enabling predictive healing workflows.
+
+**4. Severity-Based Response System**
+- *Low:* Ignore / Log / Monitor
+- *Medium:* Restart / Flush / Scale
+- *High:* Rollback / Switch Node / Alert
+
+---
+
+*Built for a hackathon — clarity, demo-ability, and intelligence first.*

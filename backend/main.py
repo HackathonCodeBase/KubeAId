@@ -8,8 +8,8 @@ from typing import Optional
 
 app = FastAPI(
     title="KubeAid API",
-    description="AI-Powered Self-Healing Kubernetes Simulator",
-    version="1.0.0",
+    description="Advanced AI-Powered Self-Healing Kubernetes Simulator",
+    version="2.0.0",
 )
 
 app.add_middleware(
@@ -20,12 +20,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Global system state
+# Advanced system state with pattern tracking
 system_state: dict = {
     "cpu": 30,
     "memory": 40,
     "status": "healthy",
     "error_logs": [],
+    "anomaly": None,
+    "consecutive_failures": 0,
 }
 
 # Rolling incident history (last 5)
@@ -47,26 +49,31 @@ def detect_issues() -> IssueDetail:
     cpu = system_state["cpu"]
     memory = system_state["memory"]
     logs = system_state["error_logs"]
+    anomaly = system_state["anomaly"]
 
     issues = []
-    if cpu > 80:
+    if anomaly:
+        issues.append(anomaly)
+    elif cpu > 80:
         issues.append("high_cpu")
-    if memory > 75:
+    elif memory > 75:
         issues.append("memory_spike")
-    if logs:
+    elif logs:
         issues.append("service_timeout")
 
     if not issues:
         return IssueDetail(issue_type=None, severity=None)
 
     primary = issues[0]
-    if len(issues) >= 3:
+
+    # Severity-Based Response Classification
+    if primary in ["crashloopbackoff", "config_error"]:
         severity = "high"
-    elif len(issues) == 2:
+    elif primary in ["service_timeout", "image_pull_error", "memory_leak"]:
         severity = "medium"
-    elif primary == "high_cpu" and cpu > 90:
+    elif primary == "high_cpu" and cpu > 95:
         severity = "high"
-    elif primary == "memory_spike" and memory > 88:
+    elif primary == "memory_spike" and memory > 90:
         severity = "high"
     else:
         severity = "low"
@@ -89,7 +96,7 @@ def record_incident(event_type: str, detail: str) -> None:
 
 @app.get("/", tags=["Health"])
 def root():
-    return {"service": "KubeAid", "version": "1.0.0", "status": "running"}
+    return {"service": "KubeAid", "version": "2.0.0", "status": "running"}
 
 
 @app.get("/status", tags=["Monitoring"])
@@ -107,25 +114,41 @@ def get_status():
 
 @app.post("/simulate", tags=["Simulation"])
 def simulate_failure():
-    failure_type = random.choice(["high_cpu", "memory_spike", "service_timeout"])
+    # 7 diverse failure types for Intelligent Diagnosis
+    failure_type = random.choice([
+        "high_cpu", "memory_spike", "service_timeout",
+        "crashloopbackoff", "config_error", "image_pull_error", "memory_leak"
+    ])
+
+    system_state["consecutive_failures"] += 1
+    system_state["status"] = "critical"
+    system_state["anomaly"] = failure_type
 
     if failure_type == "high_cpu":
-        system_state["cpu"] = random.randint(86, 98)
-        system_state["status"] = "critical"
+        system_state["cpu"] = random.randint(86, 99)
         detail = f"CPU spiked to {system_state['cpu']}%"
     elif failure_type == "memory_spike":
-        system_state["memory"] = random.randint(81, 96)
-        system_state["status"] = "critical"
-        detail = f"Memory spiked to {system_state['memory']}%"
-    else:
-        timeout_messages = [
-            "ERR: Pod 'api-server-7f4d' timed out after 30s",
-            "ERR: Service 'auth-service' unreachable — connection refused",
-            "ERR: Health-check failed on node 'worker-node-3'",
+        system_state["memory"] = random.randint(81, 98)
+        detail = f"Sudden memory spike to {system_state['memory']}%"
+    elif failure_type == "memory_leak":
+        system_state["memory"] = 99
+        system_state["error_logs"] = ["WARN: OOMKilled pod 'cache-redis'"]
+        detail = "Memory leak detected (OOMKilled) over last 10m"
+    elif failure_type == "crashloopbackoff":
+        system_state["error_logs"] = [
+            "ERR: Pod 'payment-svc-9x2b' CrashLoopBackOff", 
+            "WARN: Restart retries exceeded (6/6)"
         ]
-        system_state["error_logs"] = random.sample(timeout_messages, k=random.randint(1, len(timeout_messages)))
-        system_state["status"] = "critical"
-        detail = f"Service timeout injected — {len(system_state['error_logs'])} error(s)"
+        detail = "Critical Pod entered CrashLoopBackOff"
+    elif failure_type == "config_error":
+        system_state["error_logs"] = ["ERR: Invalid YAML in ConfigMap 'app-config'"]
+        detail = "Pod failed to start due to ConfigMap error"
+    elif failure_type == "image_pull_error":
+        system_state["error_logs"] = ["ERR: ImagePullBackOff — registry 'docker-local' offline"]
+        detail = "Node cannot pull container image (ImagePullBackOff)"
+    else:  # service_timeout
+        system_state["error_logs"] = ["ERR: Service 'auth-service' unreachable (504 Gateway Timeout)"]
+        detail = "Service timeout injected — downstream unresponsive"
 
     record_incident("failure_injected", detail)
     detected = detect_issues()
@@ -154,15 +177,36 @@ def auto_fix():
             "status": "healthy",
         }
 
-    if detected.issue_type == "high_cpu":
+    # Smart Decision Engine (Severity & Issue Type Actions)
+    if detected.severity == "low":
+        action_taken = f"Logged anomaly '{detected.issue_type}' (Low Severity). Ignored actively."
+        system_state["status"] = "healthy"
+        system_state["anomaly"] = None
+        system_state["error_logs"] = []
+
+    elif detected.issue_type == "high_cpu":
         system_state["cpu"] = random.randint(20, 55)
-        action_taken = "Scaled pod replicas — CPU load redistributed."
+        action_taken = "Scaled pod replicas horizontally. CPU load redistributed."
     elif detected.issue_type == "memory_spike":
         system_state["memory"] = random.randint(30, 60)
-        action_taken = "Flushed memory caches — memory reclaimed."
-    else:
+        action_taken = "Flushed memory caches and restarted idle containers."
+    elif detected.issue_type == "memory_leak":
+        system_state["memory"] = 45
+        action_taken = "Restarted leaking pod and updated resource limits dynamically."
+    elif detected.issue_type == "crashloopbackoff":
+        action_taken = "Rolled back deployment to previous stable ReplicaSet."
+    elif detected.issue_type == "config_error":
+        action_taken = "Reverted ConfigMap to last known good state and restarted pods."
+    elif detected.issue_type == "image_pull_error":
+        action_taken = "Switched to fallback replica registry and deployed successfully."
+    else: # service_timeout
+        action_taken = "Restarted timed-out pods and shifted traffic to secondary node."
+
+    # Clear anomalies post-fix
+    if detected.severity != "low":
         system_state["error_logs"] = []
-        action_taken = "Restarted timed-out pods — service restored."
+        system_state["anomaly"] = None
+        system_state["consecutive_failures"] = 0
 
     re_check = detect_issues()
     if re_check.issue_type is None:
@@ -190,7 +234,10 @@ def reset_system():
     system_state["memory"] = 40
     system_state["status"] = "healthy"
     system_state["error_logs"] = []
+    system_state["anomaly"] = None
+    system_state["consecutive_failures"] = 0
     incident_history.clear()
+    
     return {
         "metrics": {"cpu": 30, "memory": 40, "status": "healthy"},
         "logs": [],

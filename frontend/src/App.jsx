@@ -57,7 +57,11 @@ export default function App() {
         cause: `Issue: ${data.issue}. CPU: ${data.metrics.cpu}%, Memory: ${data.metrics.memory}%.`,
         fix: data.issue === 'high_cpu' ? 'Scale pod replicas to redistribute CPU load.'
           : data.issue === 'memory_spike' ? 'Flush memory caches and restart idle containers.'
-            : 'Restart timed-out pods to restore service.',
+          : data.issue === 'memory_leak' ? 'Restart leaking pod and update resource limits dynamically.'
+          : data.issue === 'crashloopbackoff' ? 'Rollback deployment to previous stable ReplicaSet.'
+          : data.issue === 'config_error' ? 'Revert ConfigMap to last known good state and restart pods.'
+          : data.issue === 'image_pull_error' ? 'Switch to fallback replica registry and deploy successfully.'
+          : 'Restart timed-out pods and shift traffic to secondary node.',
         reasoning: 'Rule-based diagnosis (no OpenAI key configured).',
       })
       return
