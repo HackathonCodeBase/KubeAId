@@ -1,6 +1,10 @@
+import { useState } from 'react'
+
 export default function ActionPanel({ onSimulate, onFix, onReset, logs, action, simulating, fixing }) {
+    const [simType, setSimType] = useState('random')
+
     return (
-        <div className="bg-[#111111] border border-white/10">
+        <div className="bg-[#111111] border border-white/10 h-full">
             {/* Header bar */}
             <div className="flex items-center gap-3 px-6 py-3 border-b border-white/8">
                 <div className="w-1 h-4 bg-white/20" />
@@ -8,16 +12,34 @@ export default function ActionPanel({ onSimulate, onFix, onReset, logs, action, 
             </div>
 
             <div className="p-6 space-y-5">
-                {/* Buttons */}
-                <div className="flex flex-wrap gap-3">
-                    <button
-                        onClick={onSimulate}
-                        disabled={simulating}
-                        className="flex-1 min-w-[130px] flex items-center justify-center gap-2 px-4 py-3
+                {/* Controls */}
+                <div className="space-y-3">
+                    <select
+                        value={simType}
+                        onChange={(e) => setSimType(e.target.value)}
+                        disabled={simulating || fixing}
+                        className="w-full bg-[#0d0d0d] text-white font-bold text-[11px] uppercase tracking-[0.15em] border border-white/20 px-3 py-3 outline-none hover:border-white/40 cursor-pointer transition-colors disabled:opacity-40 appearance-none text-center"
+                    >
+                        <option value="random">🎲 RANDOM ANOMALY</option>
+                        <option value="crashloopbackoff">🚨 CRASHLOOPBACKOFF (High)</option>
+                        <option value="config_error">🚨 CONFIG ERROR (High)</option>
+                        <option value="high_cpu">🚨 CPU OVERLOAD (High)</option>
+                        <option value="memory_spike">🚨 MEMORY SPIKE (High)</option>
+                        <option value="image_pull_error">⚠️ IMAGE PULL ERROR (Med)</option>
+                        <option value="memory_leak">⚠️ MEMORY LEAK (Med)</option>
+                        <option value="service_timeout">⚠️ SVC TIMEOUT (Med)</option>
+                    </select>
+
+                    {/* Buttons */}
+                    <div className="flex flex-wrap gap-2">
+                        <button
+                            onClick={() => onSimulate(simType === 'random' ? null : simType)}
+                            disabled={simulating}
+                            className="flex-1 min-w-[130px] flex items-center justify-center gap-2 px-4 py-3
               bg-[#CC0000] text-white font-bold text-xs uppercase tracking-[0.15em]
               hover:bg-red-700 active:scale-[0.98] transition-all duration-150
               disabled:opacity-40 disabled:cursor-not-allowed border border-[#CC0000]"
-                    >
+                        >
                         {simulating
                             ? <><div className="w-3 h-3 border-2 border-white border-t-transparent animate-spin" /> SIMULATING</>
                             : <>⚡ SIMULATE</>}
@@ -43,6 +65,7 @@ export default function ActionPanel({ onSimulate, onFix, onReset, logs, action, 
                     >
                         ↺ RESET
                     </button>
+                    </div>
                 </div>
 
                 {/* Last action */}

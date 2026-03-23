@@ -95,11 +95,12 @@ Logs: ${data.logs.join('; ') || 'none'}
     }
   }, [])
 
-  const handleSimulate = async () => {
+  const handleSimulate = async (type = null) => {
     setSimulating(true)
     setLastAction(null)
     try {
-      const res = await fetch('/simulate', { method: 'POST' })
+      const url = type ? `/simulate?type=${type}` : '/simulate'
+      const res = await fetch(url, { method: 'POST' })
       const data = await res.json()
       setSystemData(data)
       setCpuHistory(prev => [...prev.slice(-9), data.metrics.cpu])

@@ -113,12 +113,18 @@ def get_status():
 
 
 @app.post("/simulate", tags=["Simulation"])
-def simulate_failure():
+def simulate_failure(type: Optional[str] = None):
     # 7 diverse failure types for Intelligent Diagnosis
-    failure_type = random.choice([
+    valid_types = [
         "high_cpu", "memory_spike", "service_timeout",
         "crashloopbackoff", "config_error", "image_pull_error", "memory_leak"
-    ])
+    ]
+    
+    if type in valid_types:
+        failure_type = type
+    else:
+        failure_type = random.choice(valid_types)
+
 
     system_state["consecutive_failures"] += 1
     system_state["status"] = "critical"
