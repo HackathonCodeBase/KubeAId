@@ -71,10 +71,10 @@ def detect_issues() -> IssueDetail:
         severity = "high"
     elif primary in ["service_timeout", "image_pull_error", "memory_leak"]:
         severity = "medium"
-    elif primary == "high_cpu" and cpu > 95:
-        severity = "high"
-    elif primary == "memory_spike" and memory > 90:
-        severity = "high"
+    elif primary == "high_cpu":
+        severity = "high" if cpu >= 90 else "medium"
+    elif primary == "memory_spike":
+        severity = "high" if memory >= 88 else "medium"
     else:
         severity = "low"
 
