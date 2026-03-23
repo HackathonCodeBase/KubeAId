@@ -3,9 +3,9 @@ export default function Header({ status }) {
     return (
         <header className="flex items-center justify-between px-8 py-4 bg-[#0d0d0d] border-b border-[#CC0000]/30 sticky top-0 z-50">
             <div className="flex items-center gap-4">
-                {/* Sharp logo block */}
-                <div className="w-7 h-7 bg-[#CC0000] flex items-center justify-center">
-                    <span className="text-white font-black text-xs tracking-tighter">K</span>
+                {/* Futuristic Logo */}
+                <div className="w-8 h-8 flex items-center justify-center border border-[#CC0000]/50 bg-black overflow-hidden">
+                    <img src="/logo.png" alt="K" className="w-full h-full object-cover scale-110" />
                 </div>
                 <span className="font-black text-lg text-white tracking-tighter">KUBEAID</span>
                 <div className="hidden sm:block w-px h-4 bg-white/15" />
