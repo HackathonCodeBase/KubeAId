@@ -129,6 +129,7 @@ def simulate_failure(type: Optional[str] = None):
     system_state["consecutive_failures"] += 1
     system_state["status"] = "critical"
     system_state["anomaly"] = failure_type
+    system_state["error_logs"] = [] # Clear leftover logs from previous failures
 
     if failure_type == "high_cpu":
         system_state["cpu"] = random.randint(86, 99)
@@ -252,3 +253,4 @@ def reset_system():
         "action": "System reset to healthy baseline.",
         "status": "healthy",
     }
+    
