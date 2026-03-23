@@ -1,16 +1,36 @@
-# React + Vite
+# KubeAid — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React dashboard for the KubeAid AI-powered self-healing Kubernetes simulator.
 
-Currently, two official plugins are available:
+## Stack
+- **React 18** + **Vite 8**
+- **Tailwind CSS v4**
+- **OpenAI API** (gpt-3.5-turbo) with rule-based fallback
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Setup
 
-## React Compiler
+```bash
+npm install
+cp .env.example .env      # add your VITE_OPENAI_API_KEY
+npm run dev               # http://localhost:5173
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+> Backend must be running on port 8000. Vite proxies all API calls automatically.
 
-## Expanding the ESLint configuration
+## Components
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+| File | Purpose |
+|------|---------|
+| `App.jsx` | Root — state, API polling, OpenAI calls |
+| `Header.jsx` | Sticky nav with live system status |
+| `SystemStatusCard.jsx` | OK / ERR display with issue tags |
+| `MetricsPanel.jsx` | CPU & Memory bars + history chart |
+| `AIDiagnosisPanel.jsx` | Root cause, fix, reasoning from AI |
+| `ActionPanel.jsx` | Simulate / Auto Fix / Reset buttons + logs |
+
+## Demo Flow
+
+1. **Simulate Failure** → injects random CPU/Memory/Timeout failure
+2. **AI Diagnosis** → auto-triggers and shows root cause + fix
+3. **Auto Fix** → remediates the issue, system recovers
+4. **Reset** → back to baseline for next demo round
