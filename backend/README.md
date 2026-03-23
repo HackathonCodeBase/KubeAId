@@ -2,6 +2,17 @@
 
 FastAPI backend simulating an AI-powered self-healing Kubernetes environment.
 
+```text
+backend/
+├── main.py              (FastAPI entrypoint and routing)
+├── models.py            (Pydantic schemas)
+├── state.py             (Global RL matrix and simulated system state)
+└── engines/             (Business logic modules)
+    ├── detection.py     (Rule-engine & Pre-emptive alert triggers)
+    ├── simulation.py    (Anomaly & Degradation injection)
+    └── remediation.py   (Auto-fix with dynamic confidence scores)
+```
+
 ## Stack
 - **FastAPI** + **Uvicorn**
 - **Pydantic v2**

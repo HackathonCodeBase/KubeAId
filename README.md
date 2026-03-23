@@ -62,7 +62,13 @@ API Docs → **http://localhost:8000/docs**
 - *Kubernetes:* Shows metrics via external tools.
 - *KubeAid:* Tracks exact anomaly patterns and state over time, enabling predictive healing workflows.
 
-**4. Severity-Based Response System**
+**4. Predictive Incident Simulation (V3 feature)**
+- Simulates creeping degradation (e.g., slow memory leaks) before they crash. 
+- AI predicts the failure curve and executes **Pre-emptive Scaling** before end-users are ever affected.
+
+**5. Reinforcement Learning Matrix (V3 feature)**
+- The Auto-Fix engine has dynamic confidence scores.
+- If a specific remediation strategy fails, KubeAid tracks the penalty and dynamically selects an alternative strategy on the next pass.
 - *Low:* Ignore / Log / Monitor
 - *Medium:* Restart / Flush / Scale
 - *High:* Rollback / Switch Node / Alert
