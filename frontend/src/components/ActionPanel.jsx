@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export default function ActionPanel({ onSimulate, onFix, onReset, logs, action, simulating, fixing }) {
+export default function ActionPanel({ onSimulate, onFix, onReset, logs, action, simulating, fixing, currentIssue, confidence }) {
     const [simType, setSimType] = useState('random')
 
     return (
@@ -21,6 +21,7 @@ export default function ActionPanel({ onSimulate, onFix, onReset, logs, action, 
                         className="w-full bg-[#0d0d0d] text-white font-bold text-[11px] uppercase tracking-[0.15em] border border-white/20 px-3 py-3 outline-none hover:border-white/40 cursor-pointer transition-colors disabled:opacity-40 appearance-none text-center"
                     >
                         <option value="random">🎲 RANDOM ANOMALY</option>
+                        <option value="predictive_degradation">📉 PREDICTIVE DEGRADATION (Slow)</option>
                         <option value="crashloopbackoff">🚨 CRASHLOOPBACKOFF (High)</option>
                         <option value="config_error">🚨 CONFIG ERROR (High)</option>
                         <option value="high_cpu">🚨 CPU OVERLOAD (High)</option>
@@ -55,7 +56,7 @@ export default function ActionPanel({ onSimulate, onFix, onReset, logs, action, 
                     >
                         {fixing
                             ? <><div className="w-3 h-3 border-2 border-black border-t-transparent animate-spin" /> FIXING</>
-                            : <>🔧 AUTO FIX</>}
+                            : (currentIssue === 'predictive_degradation' ? <>🔧 PRE-EMPTIVE FIX</> : <>🔧 AUTO FIX</>)}
                     </button>
 
                     <button
@@ -73,6 +74,11 @@ export default function ActionPanel({ onSimulate, onFix, onReset, logs, action, 
                     <div className="border-l-2 border-white/25 pl-3">
                         <p className="text-[9px] text-white/25 uppercase tracking-widest mb-1">LAST ACTION</p>
                         <p className="text-white/55 text-sm">{action}</p>
+                        {confidence && (
+                            <p className="text-[10px] text-blue-400 uppercase tracking-widest mt-1">
+                                AI CONFIDENCE: {(confidence * 100).toFixed(0)}%
+                            </p>
+                        )}
                     </div>
                 )}
 

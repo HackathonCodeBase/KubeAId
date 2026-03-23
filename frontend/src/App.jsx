@@ -56,6 +56,7 @@ export default function App() {
       setDiagnosis({
         cause: `Issue: ${data.issue}. CPU: ${data.metrics.cpu}%, Memory: ${data.metrics.memory}%.`,
         fix: data.issue === 'high_cpu' ? 'Scale pod replicas to redistribute CPU load.'
+          : data.issue === 'predictive_degradation' ? 'Pre-emptively scale replicas to prevent memory/CPU exhaustion.'
           : data.issue === 'memory_spike' ? 'Flush memory caches and restart idle containers.'
           : data.issue === 'memory_leak' ? 'Restart leaking pod and update resource limits dynamically.'
           : data.issue === 'crashloopbackoff' ? 'Rollback deployment to previous stable ReplicaSet.'
@@ -99,7 +100,7 @@ Logs: ${data.logs.join('; ') || 'none'}
     setSimulating(true)
     setLastAction(null)
     try {
-      const url = type ? `/simulate?type=${type}` : '/simulate'
+      const url = type === 'predictive_degradation' ? '/simulate/degradation' : (type ? `/simulate?type=${type}` : '/simulate')
       const res = await fetch(url, { method: 'POST' })
       const data = await res.json()
       setSystemData(data)
@@ -167,9 +168,11 @@ Logs: ${data.logs.join('; ') || 'none'}
             onFix={handleFix}
             onReset={handleReset}
             logs={logs}
-            action={lastAction || systemData.action}
+            action={lastAction}
             simulating={simulating}
             fixing={fixing}
+            currentIssue={issue}
+            confidence={systemData.confidence}
           />
         </div>
 

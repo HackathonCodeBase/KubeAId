@@ -8,8 +8,9 @@ export default function SystemStatusCard({ status, issue, severity }) {
         config_error: 'CONFIG ERR',
         image_pull_error: 'IMG PULL ERR',
         memory_leak: 'MEM LEAK',
+        predictive_degradation: 'PREDICTIVE ALERT',
     }
-    const sevColor = { low: 'text-yellow-400 border-yellow-500', medium: 'text-orange-400 border-orange-500', high: 'text-[#CC0000] border-[#CC0000]' }
+    const sevColor = { low: 'text-yellow-400 border-yellow-500', medium: 'text-orange-400 border-orange-500', high: 'text-[#CC0000] border-[#CC0000]', pre_emptive: 'text-blue-400 border-blue-500' }
 
     return (
         <div className={`relative p-6 bg-[#111111] border-2 transition-all duration-500 ${isHealthy ? 'border-white/10' : 'border-[#CC0000]'
