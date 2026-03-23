@@ -1,4 +1,4 @@
-# KubeAid 🚀
+# KubeAid
 
 **AI-Powered Self-Healing Kubernetes Environment**
 
@@ -41,10 +41,10 @@ API Docs → **http://localhost:8000/docs**
 
 ## Demo Flow
 
-1. **⚡ Simulate Failure** — injects random CPU / Memory / Timeout failure
-2. **🤖 AI Diagnosis** — auto-triggers, shows root cause and recommended fix
-3. **🔧 Auto Fix** — remediates the issue and recovers the system
-4. **↺ Reset** — clears state for the next demo round
+1. **Simulate Failure** — injects random CPU / Memory / Timeout failure
+2. **AI Diagnosis** — auto-triggers, shows root cause and recommended fix
+3. **Auto Fix** — remediates the issue and recovers the system
+4. **Reset** — clears state for the next demo round
 
 ---
 
