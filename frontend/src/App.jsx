@@ -4,6 +4,7 @@ import SystemStatusCard from './components/SystemStatusCard'
 import MetricsPanel from './components/MetricsPanel'
 import AIDiagnosisPanel from './components/AIDiagnosisPanel'
 import ActionPanel from './components/ActionPanel'
+import HistoryPanel from './components/HistoryPanel'
 
 const OPENAI_KEY = import.meta.env.VITE_OPENAI_API_KEY
 const POLL_INTERVAL = 5000
@@ -19,6 +20,7 @@ export default function App() {
   const [simulating, setSimulating] = useState(false)
   const [fixing, setFixing] = useState(false)
   const [lastAction, setLastAction] = useState(null)
+  const [incidentHistory, setIncidentHistory] = useState([])
   const pollRef = useRef(null)
 
   const fetchStatus = useCallback(async () => {
@@ -29,6 +31,16 @@ export default function App() {
       setCpuHistory(prev => [...prev.slice(-9), data.metrics.cpu])
     } catch (err) {
       console.error('Status fetch failed:', err)
+    }
+  }, [])
+
+  const fetchHistory = useCallback(async () => {
+    try {
+      const res = await fetch('/history')
+      const data = await res.json()
+      setIncidentHistory(data.history || [])
+    } catch (err) {
+      console.error('History fetch failed:', err)
     }
   }, [])
 
@@ -88,6 +100,7 @@ Logs: ${data.logs.join('; ') || 'none'}
       setSystemData(data)
       setCpuHistory(prev => [...prev.slice(-9), data.metrics.cpu])
       if (data.issue) await runAIDiagnosis(data)
+      await fetchHistory()
     } catch (err) { console.error(err) }
     finally { setSimulating(false) }
   }
@@ -101,6 +114,7 @@ Logs: ${data.logs.join('; ') || 'none'}
       setCpuHistory(prev => [...prev.slice(-9), data.metrics.cpu])
       setLastAction(data.action)
       setDiagnosis(null)
+      await fetchHistory()
     } catch (err) { console.error(err) }
     finally { setFixing(false) }
   }
@@ -113,6 +127,7 @@ Logs: ${data.logs.join('; ') || 'none'}
       setCpuHistory([30])
       setDiagnosis(null)
       setLastAction(null)
+      setIncidentHistory([])
     } catch (err) { console.error(err) }
   }
 
@@ -152,6 +167,8 @@ Logs: ${data.logs.join('; ') || 'none'}
             fixing={fixing}
           />
         </div>
+
+        <HistoryPanel history={incidentHistory} />
 
         <p className="text-center text-white/10 text-[10px] uppercase tracking-[0.2em] pb-4">
           KUBEAID v1.0 · POLLING {POLL_INTERVAL / 1000}s · {metrics.status.toUpperCase()}
