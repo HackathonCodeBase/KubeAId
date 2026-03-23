@@ -1,23 +1,50 @@
 import { useState } from 'react'
 
-export default function ActionPanel({ onSimulate, onFix, onReset, logs, action, simulating, fixing, currentIssue, confidence }) {
+export default function ActionPanel({ onSimulate, onFix, onReset, logs, action, simulating, fixing, currentIssue, confidence, autoHeal, onToggleAutoHeal }) {
     const [simType, setSimType] = useState('random')
 
     return (
-        <div className="bg-[#111111] border border-white/10 h-full">
+        <div className="bg-[#111111] border border-orange-500/20 h-full">
             {/* Header bar */}
-            <div className="flex items-center gap-3 px-6 py-3 border-b border-white/8">
-                <div className="w-1 h-4 bg-white/20" />
-                <p className="text-[10px] font-bold text-white/35 uppercase tracking-[0.25em]">// CONTROLS</p>
+            <div className="flex items-center justify-between px-6 py-3 border-b border-orange-500/10">
+                <div className="flex items-center gap-3">
+                    <div className="w-1 h-4 bg-orange-500" />
+                    <p className="text-[10px] font-bold text-orange-500 uppercase tracking-[0.25em]">// CONTROLS</p>
+                </div>
+
+                {/* Auto-Heal Toggle */}
+                <button
+                    onClick={onToggleAutoHeal}
+                    className={`flex items-center gap-2 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] border transition-all duration-300 ${
+                        autoHeal
+                            ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-400'
+                            : 'bg-transparent border-white/15 text-white/30 hover:border-white/30'
+                    }`}
+                >
+                    <div className={`w-7 h-3.5 rounded-full relative transition-all duration-300 ${autoHeal ? 'bg-emerald-500' : 'bg-white/15'}`}>
+                        <div className={`absolute top-0.5 w-2.5 h-2.5 rounded-full bg-white transition-all duration-300 ${autoHeal ? 'left-3.5' : 'left-0.5'}`} />
+                    </div>
+                    {autoHeal ? 'AUTO-HEAL ON' : 'MANUAL'}
+                </button>
             </div>
 
             <div className="p-6 space-y-5">
-                {/* Controls */}
-                <div className="space-y-3">
+                {/* Auto-Heal Active Banner */}
+                {autoHeal && (
+                    <div className="flex items-center gap-3 px-4 py-3 bg-emerald-500/10 border border-emerald-500/30">
+                        <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                        <p className="text-[11px] text-emerald-400 font-bold uppercase tracking-[0.15em]">
+                            AI is autonomously detecting and healing anomalies
+                        </p>
+                    </div>
+                )}
+
+                {/* Manual Controls (dimmed when autoHeal is on) */}
+                <div className={`space-y-3 transition-opacity duration-300 ${autoHeal ? 'opacity-30 pointer-events-none' : 'opacity-100'}`}>
                     <select
                         value={simType}
                         onChange={(e) => setSimType(e.target.value)}
-                        disabled={simulating || fixing}
+                        disabled={simulating || fixing || autoHeal}
                         className="w-full bg-[#0d0d0d] text-white font-bold text-[11px] uppercase tracking-[0.15em] border border-white/20 px-3 py-3 outline-none hover:border-white/40 cursor-pointer transition-colors disabled:opacity-40 appearance-none text-center"
                     >
                         <option value="random">🎲 RANDOM ANOMALY</option>
@@ -35,7 +62,7 @@ export default function ActionPanel({ onSimulate, onFix, onReset, logs, action, 
                     <div className="flex flex-wrap gap-2">
                         <button
                             onClick={() => onSimulate(simType === 'random' ? null : simType)}
-                            disabled={simulating}
+                            disabled={simulating || autoHeal}
                             className="flex-1 min-w-[130px] flex items-center justify-center gap-2 px-4 py-3
               bg-[#CC0000] text-white font-bold text-xs uppercase tracking-[0.15em]
               hover:bg-red-700 active:scale-[0.98] transition-all duration-150
@@ -48,7 +75,7 @@ export default function ActionPanel({ onSimulate, onFix, onReset, logs, action, 
 
                     <button
                         onClick={onFix}
-                        disabled={fixing}
+                        disabled={fixing || autoHeal}
                         className="flex-1 min-w-[130px] flex items-center justify-center gap-2 px-4 py-3
               bg-white text-black font-bold text-xs uppercase tracking-[0.15em]
               hover:bg-white/85 active:scale-[0.98] transition-all duration-150
@@ -61,8 +88,8 @@ export default function ActionPanel({ onSimulate, onFix, onReset, logs, action, 
 
                     <button
                         onClick={onReset}
-                        className="px-4 py-3 text-white/30 border border-white/10 font-bold text-xs uppercase tracking-[0.15em]
-              hover:text-white hover:border-white/30 active:scale-[0.98] transition-all duration-150"
+                        className="px-4 py-3 text-orange-500/70 border border-orange-500/20 font-bold text-xs uppercase tracking-[0.15em]
+              hover:bg-orange-500/10 hover:border-orange-500/50 active:scale-[0.98] transition-all duration-150"
                     >
                         ↺ RESET
                     </button>

@@ -8,6 +8,8 @@ import HistoryPanel from './components/HistoryPanel'
 
 const OPENAI_KEY = import.meta.env.VITE_OPENAI_API_KEY
 const POLL_INTERVAL = 5000
+const AUTO_HEAL_INJECT_INTERVAL = 8000
+const AUTO_HEAL_FIX_DELAY = 4000
 
 export default function App() {
   const [systemData, setSystemData] = useState({
@@ -21,7 +23,9 @@ export default function App() {
   const [fixing, setFixing] = useState(false)
   const [lastAction, setLastAction] = useState(null)
   const [incidentHistory, setIncidentHistory] = useState([])
+  const [autoHeal, setAutoHeal] = useState(false)
   const pollRef = useRef(null)
+  const autoHealRef = useRef(null)
 
   const fetchStatus = useCallback(async () => {
     try {
@@ -52,7 +56,6 @@ export default function App() {
 
   const runAIDiagnosis = useCallback(async (data) => {
     if (!OPENAI_KEY) {
-      // Fallback rule-based diagnosis when no API key is set
       setDiagnosis({
         cause: `Issue: ${data.issue}. CPU: ${data.metrics.cpu}%, Memory: ${data.metrics.memory}%.`,
         fix: data.issue === 'high_cpu' ? 'Scale pod replicas to redistribute CPU load.'
@@ -137,6 +140,49 @@ Logs: ${data.logs.join('; ') || 'none'}
     } catch (err) { console.error(err) }
   }
 
+  // Auto-Heal Loop
+  useEffect(() => {
+    if (!autoHeal) {
+      clearInterval(autoHealRef.current)
+      return
+    }
+
+    const runCycle = async () => {
+      // Phase 1: Inject a random anomaly
+      setSimulating(true)
+      setLastAction(null)
+      try {
+        const res = await fetch('/simulate', { method: 'POST' })
+        const data = await res.json()
+        setSystemData(data)
+        setCpuHistory(prev => [...prev.slice(-9), data.metrics.cpu])
+        if (data.issue) await runAIDiagnosis(data)
+        await fetchHistory()
+      } catch (err) { console.error(err) }
+      finally { setSimulating(false) }
+
+      // Phase 2: Wait, then auto-fix
+      await new Promise(r => setTimeout(r, AUTO_HEAL_FIX_DELAY))
+
+      setFixing(true)
+      try {
+        const res = await fetch('/fix', { method: 'POST' })
+        const data = await res.json()
+        setSystemData(data)
+        setCpuHistory(prev => [...prev.slice(-9), data.metrics.cpu])
+        setLastAction(data.action)
+        setDiagnosis(null)
+        await fetchHistory()
+      } catch (err) { console.error(err) }
+      finally { setFixing(false) }
+    }
+
+    runCycle()
+    autoHealRef.current = setInterval(runCycle, AUTO_HEAL_INJECT_INTERVAL + AUTO_HEAL_FIX_DELAY)
+
+    return () => clearInterval(autoHealRef.current)
+  }, [autoHeal, runAIDiagnosis, fetchHistory])
+
   const { metrics, logs, issue, severity } = systemData
 
   return (
@@ -173,6 +219,8 @@ Logs: ${data.logs.join('; ') || 'none'}
             fixing={fixing}
             currentIssue={issue}
             confidence={systemData.confidence}
+            autoHeal={autoHeal}
+            onToggleAutoHeal={() => setAutoHeal(prev => !prev)}
           />
         </div>
 
@@ -180,6 +228,7 @@ Logs: ${data.logs.join('; ') || 'none'}
 
         <p className="text-center text-white/10 text-[10px] uppercase tracking-[0.2em] pb-4">
           KUBEAID v1.0 · POLLING {POLL_INTERVAL / 1000}s · {metrics.status.toUpperCase()}
+          {autoHeal && ' · AUTO-HEAL ACTIVE'}
         </p>
       </main>
     </div>

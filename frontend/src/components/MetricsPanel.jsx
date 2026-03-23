@@ -47,9 +47,12 @@ function MiniChart({ history }) {
 
 export default function MetricsPanel({ cpu, memory, cpuHistory }) {
     return (
-        <div className="p-6 bg-[#111111] border border-white/10 space-y-5">
-            <p className="text-[10px] font-bold text-white/25 uppercase tracking-[0.25em]">// LIVE METRICS</p>
-            <MetricBar label="CPU Usage" value={cpu} threshold={80} />
+        <div className="bg-[#111111] border border-orange-500/20 p-6 flex flex-col h-full">
+      {/* Header bar */}
+      <div className="flex items-center gap-3 mb-6 pb-3 border-b border-orange-500/10">
+        <div className="w-1 h-4 bg-orange-500" />
+        <p className="text-[10px] font-bold text-orange-500 uppercase tracking-[0.25em]">// LIVE METRICS</p>
+      </div>      <MetricBar label="CPU Usage" value={cpu} threshold={80} />
             <MetricBar label="Memory" value={memory} threshold={75} />
             <MiniChart history={cpuHistory} />
         </div>

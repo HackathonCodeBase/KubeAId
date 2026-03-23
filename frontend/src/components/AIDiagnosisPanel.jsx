@@ -18,11 +18,11 @@ export default function AIDiagnosisPanel({ diagnosis, loading }) {
     }
 
     return (
-        <div className="bg-[#111111] border border-white/10">
+        <div className="bg-[#111111] border border-orange-500/20 h-full flex flex-col">
             {/* Header bar */}
-            <div className="flex items-center gap-3 px-6 py-3 border-b border-white/8">
-                <div className="w-1 h-4 bg-[#CC0000]" />
-                <p className="text-[10px] font-bold text-white/35 uppercase tracking-[0.25em]">// AI DIAGNOSIS</p>
+            <div className="flex items-center gap-3 px-6 py-3 border-b border-orange-500/10">
+                <div className="w-1 h-4 bg-orange-500" />
+                <p className="text-[10px] font-bold text-orange-500 uppercase tracking-[0.25em]">// AI DIAGNOSIS</p>
             </div>
 
             <div className="p-6 space-y-0 divide-y divide-white/6">

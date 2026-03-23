@@ -13,16 +13,15 @@ export default function SystemStatusCard({ status, issue, severity }) {
     const sevColor = { low: 'text-yellow-400 border-yellow-500', medium: 'text-orange-400 border-orange-500', high: 'text-[#CC0000] border-[#CC0000]', pre_emptive: 'text-blue-400 border-blue-500' }
 
     return (
-        <div className={`relative p-6 bg-[#111111] border-2 transition-all duration-500 ${isHealthy ? 'border-white/10' : 'border-[#CC0000]'
+        <div className={`relative p-6 bg-[#111111] border-2 transition-all duration-500 ${isHealthy ? 'border-orange-500/30 shadow-[0_0_15px_rgba(249,115,22,0.1)]' : 'border-[#CC0000] shadow-[0_0_20px_rgba(204,0,0,0.2)]'
             }`}>
-            {/* Corner cut accent — top-right */}
-            <div className={`absolute top-0 right-0 w-0 h-0 border-t-[28px] border-r-[28px] ${isHealthy ? 'border-t-white/5 border-r-white/5' : 'border-t-[#CC0000] border-r-[#CC0000]'
-                }`} />
-
-            <p className="text-[10px] font-bold text-white/25 uppercase tracking-[0.25em] mb-5">
-        // SYSTEM STATUS
-            </p>
-
+            {/* Header bar */}
+            <div className={`flex items-center gap-3 pb-3 border-b ${isHealthy ? 'border-orange-500/10' : 'border-[#CC0000]/20'}`}>
+                <div className={`w-1 h-4 ${isHealthy ? 'bg-orange-500' : 'bg-[#CC0000]'}`} />
+                <p className={`text-[10px] font-bold uppercase tracking-[0.25em] ${isHealthy ? 'text-orange-500' : 'text-[#CC0000]'}`}>
+                    // SYSTEM STATUS
+                </p>
+            </div>
             <div className="flex items-end justify-between">
                 <div>
                     <h2 className={`text-8xl font-black tracking-tighter leading-none select-none ${isHealthy ? 'text-white' : 'text-[#CC0000]'
