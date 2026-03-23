@@ -1,0 +1,17 @@
+# Python
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+*.egg-info/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Env files (keep .env.example but not actual secrets)
+frontend/.env
+
+# Misc
+.DS_Store
+*.log
