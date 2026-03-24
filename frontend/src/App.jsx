@@ -6,7 +6,7 @@ import AIDiagnosisPanel from "./components/AIDiagnosisPanel";
 import ActionPanel from "./components/ActionPanel";
 import HistoryPanel from "./components/HistoryPanel";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000";
+const API_BASE = import.meta.env.VITE_API_BASE || "";
 const POLL_INTERVAL = 5000;
 const AUTO_HEAL_INJECT_INTERVAL = 8000;
 const AUTO_HEAL_FIX_DELAY = 4000;
@@ -33,7 +33,7 @@ export default function App() {
 
   const fetchStatus = useCallback(async () => {
     try {
-      const res = await fetch("/status");
+      const res = await fetch(`${API_BASE}/status`);
       const data = await res.json();
       setSystemData(data);
       setCpuHistory((prev) => [...prev.slice(-9), data.metrics.cpu]);
@@ -44,7 +44,7 @@ export default function App() {
 
   const fetchHistory = useCallback(async () => {
     try {
-      const res = await fetch("/history");
+      const res = await fetch(`${API_BASE}/history`);
       const data = await res.json();
       setIncidentHistory(data.history || []);
     } catch (err) {
@@ -132,10 +132,10 @@ export default function App() {
     try {
       const url =
         type === "predictive_degradation"
-          ? "/simulate/degradation"
+          ? `${API_BASE}/simulate/degradation`
           : type
-            ? `/simulate?type=${type}`
-            : "/simulate";
+            ? `${API_BASE}/simulate?type=${type}`
+            : `${API_BASE}/simulate`;
       const res = await fetch(url, { method: "POST" });
       const data = await res.json();
       setSystemData(data);
@@ -152,7 +152,7 @@ export default function App() {
   const handleFix = async () => {
     setFixing(true);
     try {
-      const res = await fetch("/fix", { method: "POST" });
+      const res = await fetch(`${API_BASE}/fix`, { method: "POST" });
       const data = await res.json();
       setSystemData(data);
       setCpuHistory((prev) => [...prev.slice(-9), data.metrics.cpu]);
@@ -168,7 +168,7 @@ export default function App() {
 
   const handleReset = async () => {
     try {
-      const res = await fetch("/reset", { method: "POST" });
+      const res = await fetch(`${API_BASE}/reset`, { method: "POST" });
       const data = await res.json();
       setSystemData(data);
       setCpuHistory([30]);
@@ -192,7 +192,7 @@ export default function App() {
       setSimulating(true);
       setLastAction(null);
       try {
-        const res = await fetch("/simulate", { method: "POST" });
+        const res = await fetch(`${API_BASE}/simulate`, { method: "POST" });
         const data = await res.json();
         setSystemData(data);
         setCpuHistory((prev) => [...prev.slice(-9), data.metrics.cpu]);
@@ -209,7 +209,7 @@ export default function App() {
 
       setFixing(true);
       try {
-        const res = await fetch("/fix", { method: "POST" });
+        const res = await fetch(`${API_BASE}/fix`, { method: "POST" });
         const data = await res.json();
         setSystemData(data);
         setCpuHistory((prev) => [...prev.slice(-9), data.metrics.cpu]);
