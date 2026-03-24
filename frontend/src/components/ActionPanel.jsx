@@ -15,11 +15,10 @@ export default function ActionPanel({ onSimulate, onFix, onReset, logs, action, 
                 {/* Auto-Heal Toggle */}
                 <button
                     onClick={onToggleAutoHeal}
-                    className={`flex items-center gap-2 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] border transition-all duration-300 ${
-                        autoHeal
+                    className={`flex items-center gap-2 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] border transition-all duration-300 ${autoHeal
                             ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-400'
                             : 'bg-transparent border-white/15 text-white/30 hover:border-white/30'
-                    }`}
+                        }`}
                 >
                     <div className={`w-7 h-3.5 rounded-full relative transition-all duration-300 ${autoHeal ? 'bg-emerald-500' : 'bg-white/15'}`}>
                         <div className={`absolute top-0.5 w-2.5 h-2.5 rounded-full bg-white transition-all duration-300 ${autoHeal ? 'left-3.5' : 'left-0.5'}`} />
@@ -47,15 +46,15 @@ export default function ActionPanel({ onSimulate, onFix, onReset, logs, action, 
                         disabled={simulating || fixing || autoHeal}
                         className="w-full bg-[#0d0d0d] text-white font-bold text-[11px] uppercase tracking-[0.15em] border border-white/20 px-3 py-3 outline-none hover:border-white/40 cursor-pointer transition-colors disabled:opacity-40 appearance-none text-center"
                     >
-                        <option value="random">🎲 RANDOM ANOMALY</option>
-                        <option value="predictive_degradation">📉 PREDICTIVE DEGRADATION (Slow)</option>
-                        <option value="crashloopbackoff">🚨 CRASHLOOPBACKOFF (High)</option>
-                        <option value="config_error">🚨 CONFIG ERROR (High)</option>
-                        <option value="high_cpu">🚨 CPU OVERLOAD (High)</option>
-                        <option value="memory_spike">🚨 MEMORY SPIKE (High)</option>
-                        <option value="image_pull_error">⚠️ IMAGE PULL ERROR (Med)</option>
-                        <option value="memory_leak">⚠️ MEMORY LEAK (Med)</option>
-                        <option value="service_timeout">⚠️ SVC TIMEOUT (Med)</option>
+                        <option value="random">RANDOM ANOMALY</option>
+                        <option value="predictive_degradation">[SLOW] PREDICTIVE DEGRADATION</option>
+                        <option value="crashloopbackoff">[HIGH] CRASHLOOPBACKOFF</option>
+                        <option value="config_error">[HIGH] CONFIG ERROR</option>
+                        <option value="high_cpu">[HIGH] CPU OVERLOAD</option>
+                        <option value="memory_spike">[HIGH] MEMORY SPIKE</option>
+                        <option value="image_pull_error">[MED] IMAGE PULL ERROR</option>
+                        <option value="memory_leak">[MED] MEMORY LEAK</option>
+                        <option value="service_timeout">[MED] SVC TIMEOUT</option>
                     </select>
 
                     {/* Buttons */}
@@ -68,31 +67,31 @@ export default function ActionPanel({ onSimulate, onFix, onReset, logs, action, 
               hover:bg-red-700 active:scale-[0.98] transition-all duration-150
               disabled:opacity-40 disabled:cursor-not-allowed border border-[#CC0000]"
                         >
-                        {simulating
-                            ? <><div className="w-3 h-3 border-2 border-white border-t-transparent animate-spin" /> SIMULATING</>
-                            : <>⚡ SIMULATE</>}
-                    </button>
+                            {simulating
+                                ? <><div className="w-3 h-3 border-2 border-white border-t-transparent animate-spin" /> SIMULATING</>
+                                : <>SIMULATE</>}
+                        </button>
 
-                    <button
-                        onClick={onFix}
-                        disabled={fixing || autoHeal}
-                        className="flex-1 min-w-[130px] flex items-center justify-center gap-2 px-4 py-3
+                        <button
+                            onClick={onFix}
+                            disabled={fixing || autoHeal}
+                            className="flex-1 min-w-[130px] flex items-center justify-center gap-2 px-4 py-3
               bg-white text-black font-bold text-xs uppercase tracking-[0.15em]
               hover:bg-white/85 active:scale-[0.98] transition-all duration-150
               disabled:opacity-40 disabled:cursor-not-allowed"
-                    >
-                        {fixing
-                            ? <><div className="w-3 h-3 border-2 border-black border-t-transparent animate-spin" /> FIXING</>
-                            : (currentIssue === 'predictive_degradation' ? <>🔧 PRE-EMPTIVE FIX</> : <>🔧 AUTO FIX</>)}
-                    </button>
+                        >
+                            {fixing
+                                ? <><div className="w-3 h-3 border-2 border-black border-t-transparent animate-spin" /> FIXING</>
+                                : (currentIssue === 'predictive_degradation' ? <>PRE-EMPTIVE FIX</> : <>AUTO FIX</>)}
+                        </button>
 
-                    <button
-                        onClick={onReset}
-                        className="px-4 py-3 text-orange-500/70 border border-orange-500/20 font-bold text-xs uppercase tracking-[0.15em]
+                        <button
+                            onClick={onReset}
+                            className="px-4 py-3 text-orange-500/70 border border-orange-500/20 font-bold text-xs uppercase tracking-[0.15em]
               hover:bg-orange-500/10 hover:border-orange-500/50 active:scale-[0.98] transition-all duration-150"
-                    >
-                        ↺ RESET
-                    </button>
+                        >
+                            RESET
+                        </button>
                     </div>
                 </div>
 
